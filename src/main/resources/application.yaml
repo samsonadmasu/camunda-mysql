@@ -1,0 +1,30 @@
+camunda.bpm.admin-user:
+  id: root
+  password: password
+
+spring:
+  datasource:
+    hikari:
+      connection-init-sql: SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED
+    url: jdbc:mysql://localhost:3306/camunda
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+          ddl-auto: update
+
+camunda:
+  bpm:
+    generic-properties:
+      properties:
+        historyTimeToLive: 5
+#        history-time-to-live: 5
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html

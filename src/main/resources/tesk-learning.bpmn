@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0pk4msz" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="Process_13bbevq" name="welcome-task" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0ua82hn</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0ua82hn" sourceRef="StartEvent_1" targetRef="welcome-task" />
+    <bpmn:endEvent id="Event_015sh6p">
+      <bpmn:incoming>Flow_12p91jv</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="welcome-task" name="welcome-task" camunda:class="com.samson.workflow.delegates.task.WelcomeTasks">
+      <bpmn:incoming>Flow_0ua82hn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wh7aos</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0wh7aos" sourceRef="welcome-task" targetRef="user-task" />
+    <bpmn:userTask id="user-task" name="user-task">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="age" label="Age" type="string" />
+        </camunda:formData>
+        <camunda:executionListener class="com.samson.workflow.delegates.listeners.SampleExecutionListener" event="start" />
+        <camunda:taskListener class="com.samson.workflow.delegates.listeners.SampleTaskListener" event="complete" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0wh7aos</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qfn86f</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1qfn86f" sourceRef="user-task" targetRef="Activity_14iowud" />
+    <bpmn:sequenceFlow id="Flow_0hxg226" sourceRef="Activity_14iowud" targetRef="Activity_1cgx2tp" />
+    <bpmn:sequenceFlow id="Flow_0a94cpx" sourceRef="Activity_1cgx2tp" targetRef="adult-impl" />
+    <bpmn:sendTask id="Activity_14iowud">
+      <bpmn:incoming>Flow_1qfn86f</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hxg226</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:businessRuleTask id="adult-impl" name="adult-impl" camunda:resultVariable="adult-or-child" camunda:decisionRef="check-adult" camunda:mapDecisionResult="singleEntry">
+      <bpmn:incoming>Flow_0a94cpx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0sckja8</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:scriptTask id="Activity_1cgx2tp">
+      <bpmn:incoming>Flow_0hxg226</bpmn:incoming>
+      <bpmn:outgoing>Flow_0a94cpx</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_0sckja8" sourceRef="adult-impl" targetRef="adult-or-child-print" />
+    <bpmn:serviceTask id="adult-or-child-print" name="adult-or-child-print" camunda:class="com.samson.workflow.delegates.task.ServiceAgePrint">
+      <bpmn:incoming>Flow_0sckja8</bpmn:incoming>
+      <bpmn:outgoing>Flow_14pdwvr</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_14pdwvr" sourceRef="adult-or-child-print" targetRef="Activity_0ad33aj" />
+    <bpmn:intermediateCatchEvent id="wait-event" name="waiting for 60 sec">
+      <bpmn:outgoing>Flow_0c47v25</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0y5r9x5">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT60S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:receiveTask id="Activity_0ad33aj">
+      <bpmn:incoming>Flow_14pdwvr</bpmn:incoming>
+      <bpmn:outgoing>Flow_12p91jv</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:sequenceFlow id="Flow_12p91jv" sourceRef="Activity_0ad33aj" targetRef="Event_015sh6p" />
+    <bpmn:sequenceFlow id="Flow_0c47v25" sourceRef="wait-event" targetRef="user-task-1" />
+    <bpmn:userTask id="user-task-1" name="User task 1">
+      <bpmn:incoming>Flow_0c47v25</bpmn:incoming>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_13bbevq">
+      <bpmndi:BPMNEdge id="Flow_0c47v25_di" bpmnElement="Flow_0c47v25">
+        <di:waypoint x="980" y="178" />
+        <di:waypoint x="980" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12p91jv_di" bpmnElement="Flow_12p91jv">
+        <di:waypoint x="1040" y="120" />
+        <di:waypoint x="1162" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14pdwvr_di" bpmnElement="Flow_14pdwvr">
+        <di:waypoint x="850" y="180" />
+        <di:waypoint x="895" y="180" />
+        <di:waypoint x="895" y="120" />
+        <di:waypoint x="940" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sckja8_di" bpmnElement="Flow_0sckja8">
+        <di:waypoint x="800" y="310" />
+        <di:waypoint x="800" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0a94cpx_di" bpmnElement="Flow_0a94cpx">
+        <di:waypoint x="680" y="470" />
+        <di:waypoint x="800" y="470" />
+        <di:waypoint x="800" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hxg226_di" bpmnElement="Flow_0hxg226">
+        <di:waypoint x="470" y="470" />
+        <di:waypoint x="580" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qfn86f_di" bpmnElement="Flow_1qfn86f">
+        <di:waypoint x="420" y="370" />
+        <di:waypoint x="420" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wh7aos_di" bpmnElement="Flow_0wh7aos">
+        <di:waypoint x="420" y="200" />
+        <di:waypoint x="420" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ua82hn_di" bpmnElement="Flow_0ua82hn">
+        <di:waypoint x="215" y="160" />
+        <di:waypoint x="370" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_17182bk_di" bpmnElement="welcome-task">
+        <dc:Bounds x="370" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ejgq3j_di" bpmnElement="user-task">
+        <dc:Bounds x="370" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1x9ulan_di" bpmnElement="Activity_14iowud">
+        <dc:Bounds x="370" y="430" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1b3g0ty_di" bpmnElement="adult-impl">
+        <dc:Bounds x="750" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1piunbs_di" bpmnElement="Activity_1cgx2tp">
+        <dc:Bounds x="580" y="430" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19zgp4m_di" bpmnElement="adult-or-child-print">
+        <dc:Bounds x="750" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1fbz4sz_di" bpmnElement="user-task-1">
+        <dc:Bounds x="940" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_119sxfc_di" bpmnElement="Activity_0ad33aj">
+        <dc:Bounds x="940" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0rze4my_di" bpmnElement="wait-event">
+        <dc:Bounds x="962" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="938" y="112" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_015sh6p_di" bpmnElement="Event_015sh6p">
+        <dc:Bounds x="1162" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
